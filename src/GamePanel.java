@@ -13,13 +13,15 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener{
 	final int MENU = 0;
 	final int GAME = 1;
 	final int END = 2;
-	int currentState = END;
+	int currentState = MENU;
 	Font menuTitleFont = new Font("Arial", Font.PLAIN, 48);
 	Font menuStartFont = new Font("Arial", Font.PLAIN, 24);
 	Font menuInstFont = new Font("Arial", Font.PLAIN, 24);
 	Font endTitleFont = new Font("Arial", Font.PLAIN, 48);
 	Font endKilledFont = new Font("Arial", Font.PLAIN, 24);
 	Font endRestartFont = new Font("Arial", Font.PLAIN, 24);
+	RocketShip rocket = new RocketShip(250, 700, 50, 50);
+	ObjectManager objMan = new ObjectManager(rocket);
 	Timer frameDraw = new Timer(1000/60, this);
 	GamePanel() {
 		frameDraw.start();
@@ -37,6 +39,8 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener{
 	void updateMenuState() {
 	}
 	void updateGameState() {
+		rocket.update();
+		objMan.update();
 	}
 	void updateEndState() {
 	}
@@ -54,6 +58,7 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener{
 	void drawGameState(Graphics g) {  
 		g.setColor(Color.black);
 		g.fillRect(0,  0, LeagueInvaders.WIDTH, LeagueInvaders.HEIGHT);
+		rocket.draw(g);
 	}
 	void drawEndState(Graphics g)  {  
 		g.setColor(Color.red);
@@ -61,7 +66,10 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener{
 		g.setFont(endTitleFont);
 		g.setColor(Color.BLACK);
 		g.drawString("GAME OVER", 85, 100);
-		g.setFont();
+		g.setFont(endKilledFont);
+		g.drawString("You killed " + "" + "enemies", 142, 350);
+		g.setFont(endRestartFont);
+		g.drawString("Press ENTER to restart", 120, 550);
 	}
 	@Override
 	public void actionPerformed(ActionEvent e) {
@@ -73,6 +81,7 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener{
 		}else if(currentState == END){
 		    updateEndState();
 		}
+		repaint();
 	}
 	@Override
 	public void keyTyped(KeyEvent e) {
@@ -91,19 +100,27 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener{
 		}
 		if(currentState == GAME) {
 			if (e.getKeyCode()==KeyEvent.VK_UP) {
-			    System.out.println("UP");
+			    rocket.up = true;
 			}else if(e.getKeyCode()==KeyEvent.VK_DOWN) {
-				System.out.println("DOWN");
+				rocket.down = true;
 			}else if(e.getKeyCode()==KeyEvent.VK_LEFT) {
-				System.out.println("LEFT");
+				rocket.left = true;
 			}else if(e.getKeyCode()==KeyEvent.VK_RIGHT) {
-				System.out.println("RIGHT");
+				rocket.right = true;
 			}
 		}
 	}
 	@Override
 	public void keyReleased(KeyEvent e) {
 		// TODO Auto-generated method stub
-		
+		if (e.getKeyCode()==KeyEvent.VK_UP) {
+		    rocket.up = false;
+		}else if(e.getKeyCode()==KeyEvent.VK_DOWN) {
+			rocket.down = false;
+		}else if(e.getKeyCode()==KeyEvent.VK_LEFT) {
+			rocket.left = false;
+		}else if(e.getKeyCode()==KeyEvent.VK_RIGHT) {
+			rocket.right = false;
+		}
 	}
 }
