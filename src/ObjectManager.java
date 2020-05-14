@@ -1,8 +1,10 @@
 import java.awt.Graphics;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Random;
 
-public class ObjectManager {
+public class ObjectManager implements ActionListener {
 	RocketShip rs;
 	ArrayList<Alien> aliens = new ArrayList<Alien>();
 	ArrayList<Projectile> projectiles = new ArrayList<Projectile>();
@@ -48,6 +50,13 @@ public class ObjectManager {
 			if(!projectiles.get(i).isActive) {
 				projectiles.remove(i);
 			}
+		}
+	}
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		// TODO Auto-generated method stub
+		if(new GamePanel().alienSpawn == e.getSource()) {
+			addAlien();
 		}
 	}
 }
