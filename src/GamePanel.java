@@ -1,6 +1,7 @@
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
+import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -30,7 +31,7 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener{
 	public static boolean needImage = true;
 	public static boolean gotImage = false;	
 	void startGame(int msSpeed, ObjectManager obj) {
-	    alienSpawn = new Timer(msSpeed , obj);
+	    alienSpawn = new Timer(msSpeed, obj);
 	    alienSpawn.start();
 	}
 	void loadImage(String imageFile) {
@@ -65,6 +66,9 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener{
 	void updateGameState() {
 		objMan.update();
 		rocket.update();
+		if(!rocket.isActive) {
+			currentState=END;
+		}
 	}
 	void updateEndState() {
 	}
@@ -87,6 +91,7 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener{
 			g.fillRect(0,  0, LeagueInvaders.WIDTH, LeagueInvaders.HEIGHT);
 		}
 		rocket.draw(g);
+		objMan.draw(g);
 	}
 	void drawEndState(Graphics g) {  
 		g.setColor(Color.red);
@@ -95,7 +100,7 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener{
 		g.setColor(Color.BLACK);
 		g.drawString("GAME OVER", 85, 100);
 		g.setFont(endKilledFont);
-		g.drawString("You killed " + "" + "enemies", 142, 350);
+		g.drawString("You killed " + objMan.getScore() + " enemies", 142, 350);
 		g.setFont(endRestartFont);
 		g.drawString("Press ENTER to restart", 120, 550);
 	}
@@ -125,6 +130,10 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener{
 			}
 		    if(currentState == GAME) {
 		    	alienSpawn.stop();
+		    }
+		    if(currentState == END) {
+		    	rocket = new RocketShip(250, 700, 50, 50);
+		    	objMan = new ObjectManager(rocket);
 		    }
 		    if (currentState == END) {
 		        currentState = MENU;
